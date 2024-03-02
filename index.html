@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PedeMath</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">PedeMath</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/kuis.html">Kuis</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="mb-4 d-flex align-items-end justify-content-between">
+            <h1>Data User</h1>
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#userModal"
+                onclick="addUser()">
+                Add User
+            </button>
+        </div>
+        <div class="table-responsive">
+            <table class="table" id="userTable">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col" width="5%">#</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col">Kelas</th>
+                        <th scope="col">Video</th>
+                        <th scope="col">Materi</th>
+                        <th scope="col">Kuis</th>
+                        <th scope="col">Bintang</th>
+                        <th scope="col">Tindakan</th>
+                    </tr>
+                </thead>
+                <tbody id="userData">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="form-user">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="title-form">Edit User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="idUser" class="form-control">
+                        <div class="mb-3">
+                            <label for="nama" class="mb-0">Nama</label>
+                            <input type="text" name="nama" id="nama" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="kelas" class="mb-0">Kelas</label>
+                            <input type="text" name="kelas" id="kelas" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_video" class="mb-0">Total Video</label>
+                            <input type="number" min="0" step="1" name="total_video" id="total_video"
+                                class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_materi" class="mb-0">Total Materi</label>
+                            <input type="number" min="0" step="1" name="total_materi" id="total_materi"
+                                class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_kuis" class="mb-0">Total Kuis</label>
+                            <input type="number" min="0" step="1" name="total_kuis" id="total_kuis"
+                                class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="total_bintang" class="mb-0">Total Bintang</label>
+                            <input type="number" min="0" step="1" name="total_bintang" id="total_bintang"
+                                class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-secondary" data-dismiss="modal"
+                            onclick="resetForm()">Batal</button>
+                        <button type="button" class="btn btn-primary" id="addUserButton"
+                            onclick="API_addUser()">Simpan</button>
+                        <button type="button" class="btn btn-primary" id="editUserButton"
+                            onclick="API_editUser()">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form id="form-delete-user">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="title-form">Delete User</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="idUserDelete" class="form-control">
+                        <p>Apakah kamu yakin ingin menghapus data user ini?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                        <button type="button" class="btn btn-danger" onclick="API_deleteUser()">Hapus</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function fetchUsers() {
+            fetch('https://api-pedemath.fajrulaslim.com/api/users')
+                .then(response => response.json())
+                .then(data => {
+                    const userData = document.getElementById('userData');
+                    userData.innerHTML = '';
+                    data.forEach((user, index) => {
+                        const row = `<tr>
+              <td>${index + 1}</td>
+              <td>${user.nama}</td>
+              <td>${user.kelas ? user.kelas : '-'}</td>
+              <td>${user.total_video}</td>
+              <td>${user.total_materi}</td>
+              <td>${user.total_kuis}</td>
+              <td>${user.total_bintang}</td>
+              <td>
+                <button type="button" class="btn btn-outline-success btn-sm" data-toggle="modal" data-target="#userModal" onclick="editUser('${user.id}', '${user.nama}', '${user.kelas ? user.kelas : ''}', '${user.total_video}', '${user.total_materi}', '${user.total_kuis}', '${user.total_bintang}')">Edit</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" data-toggle="modal" data-target="#deleteModal" onclick="deleteUser('${user.id}')">Delete</button>
+              </td>
+            </tr>`;
+                        userData.innerHTML += row;
+                    });
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        }
+        fetchUsers();
+
+        $('#nama').on('input', function () {
+            $(this).val($(this).val().toUpperCase());
+        });
+
+        addUser = () => {
+            $('#userModal').modal('show');
+            $('#title-form').html('Add User')
+            $('#idUser').val(0)
+            $('#nama').val('')
+            $('#kelas').val('')
+            $('#total_video').val(0)
+            $('#total_materi').val(0)
+            $('#total_kuis').val(0)
+            $('#total_bintang').val(0)
+            $('#addUserButton').addClass('d-block')
+            $('#editUserButton').addClass('d-none')
+            $('#addUserButton').removeClass('d-none')
+            $('#editUserButton').removeClass('d-block')
+        }
+
+        editUser = (id, nama, kelas, total_video, total_materi, total_kuis, total_bintang) => {
+            $('#userModal').modal('show');
+            $('#title-form').html('Edit User')
+            $('#idUser').val(id)
+            $('#nama').val(nama)
+            $('#kelas').val(kelas)
+            $('#total_video').val(total_video)
+            $('#total_materi').val(total_materi)
+            $('#total_kuis').val(total_kuis)
+            $('#total_bintang').val(total_bintang)
+            $('#addUserButton').addClass('d-none')
+            $('#editUserButton').addClass('d-block')
+            $('#addUserButton').removeClass('d-block')
+            $('#editUserButton').removeClass('d-none')
+        }
+
+        deleteUser = (id) => {
+            $('#deleteModal').modal('show');
+            $('#idUserDelete').val(id)
+        }
+
+        resetForm = () => {
+            $('#title-form').html('Add User')
+        }
+
+        API_addUser = () => {
+            const nama = $('#nama').val();
+            const kelas = $('#kelas').val();
+            const total_video = $('#total_video').val();
+            const total_materi = $('#total_materi').val();
+            const total_kuis = $('#total_kuis').val();
+            const total_bintang = $('#total_bintang').val();
+
+            const payload = {
+                nama: nama,
+                kelas: kelas,
+                total_video: total_video,
+                total_materi: total_materi,
+                total_kuis: total_kuis,
+                total_bintang: total_bintang
+            };
+
+            $.ajax({
+                url: 'https://api-pedemath.fajrulaslim.com/api/users',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function (data) {
+                    console.log('User added successfully:', data);
+                    $('#userModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error adding user:', error);
+                }
+            });
+        }
+
+        API_editUser = () => {
+            const id = $('#idUser').val();
+            const nama = $('#nama').val();
+            const kelas = $('#kelas').val();
+            const total_video = $('#total_video').val();
+            const total_materi = $('#total_materi').val();
+            const total_kuis = $('#total_kuis').val();
+            const total_bintang = $('#total_bintang').val();
+
+            const payload = {
+                nama: nama,
+                kelas: kelas,
+                total_video: total_video,
+                total_materi: total_materi,
+                total_kuis: total_kuis,
+                total_bintang: total_bintang
+            };
+
+            $.ajax({
+                url: `https://api-pedemath.fajrulaslim.com/api/users/${id}`,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(payload),
+                success: function (data) {
+                    console.log('User updated successfully:', data);
+                    $('#userModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error adding user:', error);
+                }
+            });
+        }
+
+        API_deleteUser = () => {
+            const id = $('#idUserDelete').val();
+            $.ajax({
+                url: `https://api-pedemath.fajrulaslim.com/api/users/${id}`,
+                type: 'DELETE',
+                success: function (data) {
+                    console.log('User deleted successfully:', data);
+                    $('#deleteModal').modal('hide');
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error deleting user:', error);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
